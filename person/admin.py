@@ -11,3 +11,6 @@ class PersonAdmin(admin.ModelAdmin):
     inlines = [PhoneNumberInline]
 
 admin.site.register(Person, PersonAdmin)
+
+
+admin.site.register(PhoneNumber)

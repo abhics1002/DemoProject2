@@ -3,7 +3,16 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, loader, RequestContext
 from person.models import Person, PhoneNumber
-from person.forms import PersonForm, PhoneNumberFormSet
+# from person.forms import PersonForm, PhoneNumberFormSet
+from django.conf.urls import url, include
+from django.contrib.auth.models import User
+from rest_framework import routers, serializers, viewsets
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.decorators import list_route, detail_route, permission_classes, authentication_classes
+from rest_framework import viewsets, status
+import json
 # Create your views here.
 
 # GET, POST, PATCH, DELETE CALLs,
@@ -51,3 +60,24 @@ def detail(request, id):
     person = Person.objects.get(id=id)
     return render_to_response('detail.html', {'page_name': 'detail','person': person}, RequestContext(request))
 
+
+
+
+
+class PersonViewSet(viewsets.ViewSet):
+
+    @list_route(methods=['GET'])
+    def GetAllPersons(self, request):
+        allPersons = Person.objects.all()
+        response = dict()
+        personDetails = dict()
+        for person in allPersons:
+            personDetails['firstName'] = person.first_name
+            personDetails['lastName'] = person.last_name
+            personDetails['company'] = person.company
+        response['Person'] = personDetails
+        return HttpResponse(json.dumps(response), content_type="application/json", status=status.HTTP_200_OK)
+
+    @list_route(methods=['POST'])
+    def UpdatePersonDetails(self, request):
+        pass
