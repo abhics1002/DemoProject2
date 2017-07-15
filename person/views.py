@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, loader, RequestContext
 from person.models import Person, PhoneNumber
+
 # from person.forms import PersonForm, PhoneNumberFormSet
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
@@ -10,6 +11,7 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+
 from rest_framework.decorators import list_route, detail_route, permission_classes, authentication_classes
 from rest_framework import viewsets, status
 import json
@@ -70,14 +72,32 @@ class PersonViewSet(viewsets.ViewSet):
     def GetAllPersons(self, request):
         allPersons = Person.objects.all()
         response = dict()
+        personList=[]
         personDetails = dict()
         for person in allPersons:
             personDetails['firstName'] = person.first_name
             personDetails['lastName'] = person.last_name
             personDetails['company'] = person.company
-        response['Person'] = personDetails
+            personList.append(personDetails)
+        response['Person'] = personList
         return HttpResponse(json.dumps(response), content_type="application/json", status=status.HTTP_200_OK)
 
     @list_route(methods=['POST'])
     def UpdatePersonDetails(self, request):
+        person = Person.objects.create(first_name= "test-first-name", last_name="test-last-name",
+                                       company="LinkedIn", title="Program manager", email="test@linkedin.com",
+                                       url="http://testlink.com")
+        person.save()
+        return HttpResponse(status=status.HTTP_200_OK)
+
+    @list_route(methods=['PUT'])
+    def CreatePersonDetails(self, request):
+        person = Person.objects.create(first_name=request.data['first_name'], last_name=request.data['last_name'],
+                                       company=request.data['company'], title=request.data['title'], email=request.data['email'],
+                                       url=request.data['url'])
+        person.save()
+        return HttpResponse("Created Person details successfully", content_type="application/json", status=status.HTTP_200_OK)
+
+    @list_route(methods=['DELETE'])
+    def DeletePersonDetails(self, request):
         pass
