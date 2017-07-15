@@ -84,11 +84,13 @@ class PersonViewSet(viewsets.ViewSet):
 
     @list_route(methods=['POST'])
     def UpdatePersonDetails(self, request):
-        person = Person.objects.create(first_name= "test-first-name", last_name="test-last-name",
-                                       company="LinkedIn", title="Program manager", email="test@linkedin.com",
-                                       url="http://testlink.com")
+        person = Person.objects.get(first_name= "test-first-name")
+        person.company = "updated company name"
+        person.title = "updated Program manager"
+        person.email = "updatedtest@linkedin.com"
         person.save()
-        return HttpResponse(status=status.HTTP_200_OK)
+        # person.update(company="updated company name", title="updated Program manager", email="updatedtest@linkedin.com").save()
+        return HttpResponse("Person Object updated successfully", status=status.HTTP_200_OK)
 
     @list_route(methods=['PUT'])
     def CreatePersonDetails(self, request):
@@ -100,4 +102,6 @@ class PersonViewSet(viewsets.ViewSet):
 
     @list_route(methods=['DELETE'])
     def DeletePersonDetails(self, request):
-        pass
+        person = Person.objects.get(id=6)
+        person.delete()
+        return HttpResponse("Deleted Person details successfully", content_type="application/json", status=status.HTTP_200_OK)
