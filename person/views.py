@@ -20,8 +20,19 @@ import json
 # GET, POST, PATCH, DELETE CALLs,
 # Calls Using View Set.
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+def get_all_persons(request):
+    allPersons = Person.objects.all()
+    response = dict()
+    personList=[]
+    for person in allPersons:
+        personDetails = dict()
+        personDetails['id'] = person.id
+        personDetails['firstName'] = person.first_name
+        personDetails['lastName'] = person.last_name
+        personDetails['company'] = person.company
+        personList.append(personDetails)
+    response['Person'] = personList
+    return HttpResponse(json.dumps(response), content_type="application/json", status=status.HTTP_200_OK)
 
 def index1(request):
     people = Person.objects.all()
@@ -68,7 +79,7 @@ def detail(request, id):
 
 class PersonViewSet(viewsets.ViewSet):
 
-    @list_route(methods=['GET'])
+    @list_route(methods=['GET'], permission_classes=[IsAuthenticated])
     def GetAllPersons(self, request):
         allPersons = Person.objects.all()
         response = dict()
@@ -83,16 +94,16 @@ class PersonViewSet(viewsets.ViewSet):
         response['Person'] = personList
         return HttpResponse(json.dumps(response), content_type="application/json", status=status.HTTP_200_OK)
 
-    @list_route(methods=['POST'])
+    @list_route(methods=['POST'], permission_classes=[IsAuthenticated])
     def UpdatePersonDetails(self, request):
-        person = Person.objects.get(first_name= request.data['first_name'])
+        person = Person.objects.filter(first_name= request.data['first_name']).first()
         person.company = request.data['company']
         person.title = request.data['title']
         person.email = request.data['email']
         person.save()
         return HttpResponse("Person Object updated successfully", status=status.HTTP_200_OK)
 
-    @list_route(methods=['PUT'])
+    @list_route(methods=['PUT'], permission_classes=[IsAuthenticated])
     def CreatePersonDetails(self, request):
         person = Person.objects.create(first_name=request.data['first_name'], last_name=request.data['last_name'],
                                        company=request.data['company'], title=request.data['title'], email=request.data['email'],
@@ -100,12 +111,8 @@ class PersonViewSet(viewsets.ViewSet):
         person.save()
         return HttpResponse("Created Person details successfully", status=status.HTTP_200_OK)
 
-    @list_route(methods=['DELETE'])
+    @list_route(methods=['DELETE'], permission_classes=[IsAuthenticated])
     def DeletePersonDetails(self, request):
-<<<<<<< HEAD
         person = Person.objects.get(id=request.data['id'])
-=======
-        person = Person.objects.get(id=6)
->>>>>>> 23b64ae632577d0078ba3b5706fed75a09cc774c
         person.delete()
         return HttpResponse("Deleted Person details successfully", content_type="application/json", status=status.HTTP_200_OK)
