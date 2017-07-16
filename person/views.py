@@ -102,6 +102,10 @@ class PersonViewSet(viewsets.ViewSet):
 
     @list_route(methods=['DELETE'])
     def DeletePersonDetails(self, request):
+<<<<<<< HEAD
         person = Person.objects.get(id=request.data['id'])
+=======
+        person = Person.objects.get(id=6)
+>>>>>>> 23b64ae632577d0078ba3b5706fed75a09cc774c
         person.delete()
         return HttpResponse("Deleted Person details successfully", content_type="application/json", status=status.HTTP_200_OK)
