@@ -73,8 +73,9 @@ class PersonViewSet(viewsets.ViewSet):
         allPersons = Person.objects.all()
         response = dict()
         personList=[]
-        personDetails = dict()
         for person in allPersons:
+            personDetails = dict()
+            personDetails['id'] = person.id
             personDetails['firstName'] = person.first_name
             personDetails['lastName'] = person.last_name
             personDetails['company'] = person.company
@@ -84,12 +85,11 @@ class PersonViewSet(viewsets.ViewSet):
 
     @list_route(methods=['POST'])
     def UpdatePersonDetails(self, request):
-        person = Person.objects.get(first_name= "test-first-name")
-        person.company = "updated company name"
-        person.title = "updated Program manager"
-        person.email = "updatedtest@linkedin.com"
+        person = Person.objects.get(first_name= request.data['first_name'])
+        person.company = request.data['company']
+        person.title = request.data['title']
+        person.email = request.data['email']
         person.save()
-        # person.update(company="updated company name", title="updated Program manager", email="updatedtest@linkedin.com").save()
         return HttpResponse("Person Object updated successfully", status=status.HTTP_200_OK)
 
     @list_route(methods=['PUT'])
@@ -98,7 +98,7 @@ class PersonViewSet(viewsets.ViewSet):
                                        company=request.data['company'], title=request.data['title'], email=request.data['email'],
                                        url=request.data['url'])
         person.save()
-        return HttpResponse("Created Person details successfully", content_type="application/json", status=status.HTTP_200_OK)
+        return HttpResponse("Created Person details successfully", status=status.HTTP_200_OK)
 
     @list_route(methods=['DELETE'])
     def DeletePersonDetails(self, request):
