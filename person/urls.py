@@ -18,6 +18,6 @@ urlpatterns = (
     # (r'^add/$', 'demoProject2.person.views.add_or_edit', {'id': None}),
     # (r'^edit/(?P<id>\d+)/$', 'demoProject2.person.views.add_or_edit'),
     # (r'^delete/(?P<id>\d+)/$', 'demoProject2.person.views.delete'),
-    # (r'^$', 'demoProject2.person.views.index1'),
+    #  url(r'^get_all_persons/$', 'demoProject2.person.views.get_all_persons'),
 
 )
