@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, loader, RequestContext
 from person.models import Person, PhoneNumber
 
-# from person.forms import PersonForm, PhoneNumberFormSet
+from person.forms import PersonForm, PhoneNumberFormSet
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
@@ -20,21 +20,23 @@ import json
 # GET, POST, PATCH, DELETE CALLs,
 # Calls Using View Set.
 
+
 def get_all_persons(request):
-    allPersons = Person.objects.all()
+    all_persons = Person.objects.all()
     response = dict()
-    personList=[]
-    for person in allPersons:
-        personDetails = dict()
-        personDetails['id'] = person.id
-        personDetails['firstName'] = person.first_name
-        personDetails['lastName'] = person.last_name
-        personDetails['company'] = person.company
-        personList.append(personDetails)
-    response['Person'] = personList
+    person_list=[]
+    for person in all_persons:
+        person_details = dict()
+        person_details['id'] = person.id
+        person_details['firstName'] = person.first_name
+        person_details['lastName'] = person.last_name
+        person_details['company'] = person.company
+        person_list.append(person_details)
+    response['Person'] = person_list
     return HttpResponse(json.dumps(response), content_type="application/json", status=status.HTTP_200_OK)
 
-def index1(request):
+
+def index(request):
     people = Person.objects.all()
     template = loader.get_template('index.html')
     context = RequestContext(request)
@@ -42,6 +44,7 @@ def index1(request):
     return HttpResponse(template.render(context))
     # This does the exact same thing, but in one line.
     #return render_to_response("index.html", {'page_name': 'index', 'people': Person.objects.all()}, RequestContext(request))
+
 
 def add_or_edit(request, id):
     if id is None:
@@ -64,17 +67,23 @@ def add_or_edit(request, id):
             return HttpResponseRedirect('/person/%s/' % person.id)
     return render_to_response('add.html', {'page_name': page_name, 'form': form, 'phone_forms': phone_forms, 'person': person}, RequestContext(request))
 
+
 def delete(request, id):
     person = Person.objects.get(id=id)
     person.delete()
-    return HttpResponseRedirect('/')
+    return HttpResponse("person Object deleted Successfully", content_type="application/json", status=status.HTTP_200_OK)
+
 
 def detail(request, id):
     person = Person.objects.get(id=id)
-    return render_to_response('detail.html', {'page_name': 'detail','person': person}, RequestContext(request))
+    person_details = dict()
+    person_details['id'] = person.id
+    person_details['firstName'] = person.first_name
+    person_details['lastName'] = person.last_name
+    person_details['company'] = person.company
+    return HttpResponse(json.dumps(person_details), content_type="application/json", status=status.HTTP_200_OK)
 
-
-
+# class based view for the demo.
 
 
 class PersonViewSet(viewsets.ViewSet):

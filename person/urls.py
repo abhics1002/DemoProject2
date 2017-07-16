@@ -14,10 +14,11 @@ urlpatterns = (
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
-    # (r'^person/(?P<id>\d+)/$', 'demoProject2.person.views.detail'),
-    # (r'^add/$', 'demoProject2.person.views.add_or_edit', {'id': None}),
-    # (r'^edit/(?P<id>\d+)/$', 'demoProject2.person.views.add_or_edit'),
-    # (r'^delete/(?P<id>\d+)/$', 'demoProject2.person.views.delete'),
-    #  url(r'^get_all_persons/$', 'demoProject2.person.views.get_all_persons'),
+    url(r'^person/(?P<id>\d+)/$', views.detail),
+    # url(r'^add/$', views.add_or_edit, {'id': None}),
+    # url(r'^edit/(?P<id>\d+)/$', views.add_or_edit),
+    url(r'^delete/(?P<id>\d+)/$', views.delete),
+    # url(r'^$', views.index),
+    url(r'^get_all_persons/$', views.get_all_persons),
 
 )
