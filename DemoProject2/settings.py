@@ -82,6 +82,17 @@ DATABASES = {
     }
 }
 
+# configure mysql database server
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': 'localhost',
+#         'NAME': 'Test',
+#         'POST': '3306',
+#         'USER': 'admin',
+#         'PASSWORD': 'password',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
